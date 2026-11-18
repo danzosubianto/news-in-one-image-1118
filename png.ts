@@ -9,7 +9,7 @@ export type Rgb = readonly [number, number, number];
 
 // Supersampling factor: the page is drawn at SS x its final size and
 // averaged down, which anti-aliases the bitmap type and the rules.
-const SS = 2;
+const SS = 3;
 
 export class Canvas {
   readonly width: number; // final image width, px
@@ -96,6 +96,61 @@ export class Canvas {
       for (let dy = Math.floor(cy - half); dy <= cy + half; dy++)
         for (let dx = Math.floor(cx - half); dx <= cx + half; dx++)
           this.put(dx, dy, c);
+    }
+  }
+
+  /** Filled polygon in final-image coordinates (scanline fill over the
+   *  device buffer, so edges anti-alias on the downsample). */
+  poly(points: readonly (readonly [number, number])[], c: Rgb): void {
+    if (points.length < 3) return;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    for (const [, y] of points) {
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+    const y0 = Math.max(0, Math.floor(minY * SS));
+    const y1 = Math.min(this.dh - 1, Math.ceil(maxY * SS));
+    const n = points.length;
+    for (let dy = y0; dy <= y1; dy++) {
+      const yc = (dy + 0.5) / SS;
+      const xs: number[] = [];
+      for (let i = 0; i < n; i++) {
+        const [ax, ay] = points[i];
+        const [bx, by] = points[(i + 1) % n];
+        if ((ay <= yc && by > yc) || (by <= yc && ay > yc))
+          xs.push(ax + ((yc - ay) / (by - ay)) * (bx - ax));
+      }
+      xs.sort((p, q) => p - q);
+      for (let k = 0; k + 1 < xs.length; k += 2) {
+        const xa = Math.round(xs[k] * SS);
+        const xb = Math.round(xs[k + 1] * SS);
+        for (let dx = xa; dx <= xb; dx++) this.put(dx, dy, c);
+      }
+    }
+  }
+
+  /** Arc: a polyline along a circle, swept from a0 to a1 radians
+   *  (0 = east, positive angles clockwise, screen coordinates). */
+  arc(
+    cx: number,
+    cy: number,
+    r: number,
+    a0: number,
+    a1: number,
+    thick: number,
+    c: Rgb,
+  ): void {
+    const steps = Math.max(8, Math.ceil(Math.abs(a1 - a0) * r * SS));
+    let px = cx + Math.cos(a0) * r;
+    let py = cy + Math.sin(a0) * r;
+    for (let i = 1; i <= steps; i++) {
+      const a = a0 + ((a1 - a0) * i) / steps;
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
+      this.line(px, py, x, y, thick, c);
+      px = x;
+      py = y;
     }
   }
 
