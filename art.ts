@@ -85,8 +85,12 @@ export function drawLeadScene(cv: Canvas, x: number, y: number, w: number, h: nu
   const sunY = horizon - h * 0.16;
   cv.disc(sunX, sunY, h * 0.15, OCHRE);
   cv.disc(sunX, sunY, h * 0.10, [238, 178, 84]);
-  for (let i = 0; i < 4; i++)
-    cv.line(sunX - 24 + i * 5, horizon + 10 + i * 8, sunX + 24 - i * 5, horizon + 10 + i * 8, 2.4, OCHRE);
+  for (let i = 0; i < 4; i++) {
+    const rw = 26 - i * 4;
+    const ry = horizon + 10 + i * 9;
+    cv.line(sunX - rw, ry, sunX - rw * 0.25, ry, 2.4, OCHRE);
+    cv.line(sunX + rw * 0.15, ry, sunX + rw * 0.8, ry, 2.4, OCHRE);
+  }
 
   // Qeshm: a long low island silhouette along the horizon, a headland
   // rising at the right, the mainland a fainter line behind at left.

@@ -128,7 +128,7 @@ const DECK_STYLE: TextStyle = { scale: 3 };
 const LABEL_STYLE: TextStyle = { scale: 2.4, bold: true, tracking: 1 };
 const CAPTION: TextStyle = { scale: 2.2, bold: true, tracking: 1 };
 const CARD_HEAD: TextStyle = { scale: 3, bold: true };
-const CARD_DECK: TextStyle = { scale: 2.3 };
+const CARD_DECK: TextStyle = { scale: 2.35 };
 const BRIEF_STYLE: TextStyle = { scale: 2, bold: true };
 
 function rule(cv: Canvas, y: number, thick: number, color: Rgb): void {
