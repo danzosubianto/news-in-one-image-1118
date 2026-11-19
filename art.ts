@@ -120,28 +120,29 @@ export function drawLeadScene(cv: Canvas, x: number, y: number, w: number, h: nu
   const hitY = horizon - h * 0.055;
   for (let i = 0; i < 10; i++) {
     const a = (i / 10) * Math.PI * 2 + 0.3;
-    const r = 15 + (i % 3) * 6;
+    const r = (15 + (i % 3) * 6) * (h / 130);
     cv.line(hitX, hitY, hitX + Math.cos(a) * r, hitY + Math.sin(a) * r * 0.8, 2.6, OCHRE);
   }
-  cv.disc(hitX, hitY, 10, RED);
-  cv.disc(hitX, hitY, 6, OCHRE);
-  cv.disc(hitX, hitY, 3, [250, 226, 160]);
-  cv.disc(hitX + 15, hitY - 23, 10, SMOKE_C);
-  cv.disc(hitX + 25, hitY - 39, 13, SMOKE_B);
-  cv.disc(hitX + 38, hitY - 54, 15, SMOKE_A);
-  cv.disc(hitX + 52, hitY - 66, 12, SMOKE_B);
+  cv.disc(hitX, hitY, 10 * (h / 130), RED);
+  cv.disc(hitX, hitY, 6 * (h / 130), OCHRE);
+  cv.disc(hitX, hitY, 3 * (h / 130), [250, 226, 160]);
+  cv.disc(hitX + 15, hitY - 23 * (h / 130), 10 * (h / 130), SMOKE_C);
+  cv.disc(hitX + 25, hitY - 39 * (h / 130), 13 * (h / 130), SMOKE_B);
+  cv.disc(hitX + 38, hitY - 54 * (h / 130), 15 * (h / 130), SMOKE_A);
+  cv.disc(hitX + 52, hitY - 66 * (h / 130), 12 * (h / 130), SMOKE_B);
 
-  // Two jets high at left, contrails behind them, flying in.
-  jet(cv, x + w * 0.17, y + h * 0.20, 74, INK);
-  jet(cv, x + w * 0.27, y + h * 0.30, 58, INK);
-  cv.line(x + 8, y + h * 0.185, x + w * 0.17 - 38, y + h * 0.20, 2, PAPER);
-  cv.line(x + 8, y + h * 0.225, x + w * 0.17 - 38, y + h * 0.205, 2, PAPER);
-  cv.line(x + w * 0.10, y + h * 0.29, x + w * 0.27 - 30, y + h * 0.30, 2, PAPER);
+  // Two jets high at left, contrails behind them, flying in — sized
+  // from the panel's height so they read at a glance, not as specks.
+  jet(cv, x + w * 0.17, y + h * 0.20, h * 0.52, INK);
+  jet(cv, x + w * 0.27, y + h * 0.31, h * 0.40, INK);
+  cv.line(x + 8, y + h * 0.185, x + w * 0.17 - h * 0.27, y + h * 0.20, 2, PAPER);
+  cv.line(x + 8, y + h * 0.225, x + w * 0.17 - h * 0.27, y + h * 0.205, 2, PAPER);
+  cv.line(x + w * 0.10, y + h * 0.30, x + w * 0.27 - h * 0.21, y + h * 0.31, 2, PAPER);
 
   // The answer: three drones out over the water, heading away.
-  drone(cv, x + w * 0.86, y + h * 0.40, 30, INK);
-  drone(cv, x + w * 0.92, y + h * 0.50, 24, INK);
-  drone(cv, x + w * 0.80, y + h * 0.52, 20, INK);
+  drone(cv, x + w * 0.86, y + h * 0.40, h * 0.20, INK);
+  drone(cv, x + w * 0.92, y + h * 0.50, h * 0.16, INK);
+  drone(cv, x + w * 0.80, y + h * 0.52, h * 0.135, INK);
 }
 
 export type IconKind = "bridge" | "summit" | "senate" | "virus" | "star" | "cyclone";
